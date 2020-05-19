@@ -1,0 +1,29 @@
+version: '2.4'
+
+services:
+  app:
+    build: .
+    image: projeto1-backend
+    env_file: .env
+    networks:
+      - net
+    ports:
+      - 9876:9876
+    depends_on:
+      - db
+
+  db:
+    image: postgres:12-alpine
+    env_file: .env
+    networks:
+      - net
+    ports:
+      - 5432:5432
+    volumes:
+      - data:/var/postgresql/data
+
+networks:
+  net: {}
+
+volumes:
+  data: {}

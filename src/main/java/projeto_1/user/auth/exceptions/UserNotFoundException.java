@@ -1,6 +1,7 @@
 package projeto_1.user.auth.exceptions;
 
 public class UserNotFoundException extends Exception {
+    private static final long serialVersionUID = 4987321165501905922L;
     public final String email;
 
     public UserNotFoundException(String email) {

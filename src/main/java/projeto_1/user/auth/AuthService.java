@@ -1,11 +1,10 @@
 package projeto_1.user.auth;
 
-import javax.jws.WebMethod;
-import javax.jws.WebParam;
-import javax.jws.WebService;
-import javax.jws.soap.SOAPBinding;
-import javax.jws.soap.SOAPBinding.Style;
-
+import jakarta.jws.WebMethod;
+import jakarta.jws.WebParam;
+import jakarta.jws.WebService;
+import jakarta.jws.soap.SOAPBinding;
+import jakarta.jws.soap.SOAPBinding.Style;
 import projeto_1.exceptions.InternalServerErrorException;
 import projeto_1.user.auth.exceptions.PasswordMismatchException;
 import projeto_1.user.beans.Token;

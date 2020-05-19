@@ -1,6 +1,10 @@
 .env
+.git/
 target/
 .vscode/
+
+Dockerfile
+docker-compose.yml
 
 # Java.gitignore
 

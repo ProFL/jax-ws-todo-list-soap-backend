@@ -1,16 +1,32 @@
 package projeto_1;
 
-import javax.xml.ws.Endpoint;
+import java.sql.Connection;
 
+import jakarta.xml.ws.Endpoint;
+
+import projeto_1.config.ConfigProvider;
+import projeto_1.config.DbConnFactory;
+import projeto_1.user.UserRepository;
 import projeto_1.user.UserServiceImpl;
 import projeto_1.user.auth.AuthServiceImpl;
 
 public class App {
     public static void main(String[] args) {
-        UserServiceImpl userService = new UserServiceImpl();
-        AuthServiceImpl authService = new AuthServiceImpl(userService);
+        try {
+            ConfigProvider configs = ConfigProvider.getInstance();
+            String port = configs.getPort();
+            Connection dbConn = new DbConnFactory().setUser(configs.getDbUser()).setPassword(configs.getDbPasswd())
+                    .setConnectionString(configs.getDbConnStr()).build();
+            UserRepository userRepo = new UserRepository(dbConn);
 
-        Endpoint.publish("http://0.0.0.0:9876/user", userService);
-        Endpoint.publish("http://0.0.0.0:9876/user/auth", authService);
+            UserServiceImpl userService = new UserServiceImpl(userRepo);
+            AuthServiceImpl authService = new AuthServiceImpl(userRepo);
+
+            Endpoint.publish("http://0.0.0.0:" + port + "/user", userService);
+            Endpoint.publish("http://0.0.0.0:" + port + "/user/auth", authService);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
     }
 }
