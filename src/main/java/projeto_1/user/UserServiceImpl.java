@@ -1,7 +1,6 @@
 package projeto_1.user;
 
 import jakarta.jws.WebService;
-
 import projeto_1.exceptions.InternalServerErrorException;
 import projeto_1.user.beans.User;
 import projeto_1.user.exceptions.DuplicateUserException;

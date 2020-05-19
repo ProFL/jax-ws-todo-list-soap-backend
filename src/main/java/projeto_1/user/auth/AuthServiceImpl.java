@@ -1,10 +1,8 @@
 package projeto_1.user.auth;
 
-import jakarta.jws.WebService;
-
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-
+import jakarta.jws.WebService;
 import projeto_1.exceptions.InternalServerErrorException;
 import projeto_1.user.UserRepository;
 import projeto_1.user.auth.exceptions.PasswordMismatchException;

@@ -1,22 +1,24 @@
 package projeto_1;
 
-import java.sql.Connection;
-
 import jakarta.xml.ws.Endpoint;
-
 import projeto_1.config.ConfigProvider;
 import projeto_1.config.DbConnFactory;
 import projeto_1.user.UserRepository;
 import projeto_1.user.UserServiceImpl;
 import projeto_1.user.auth.AuthServiceImpl;
 
+import java.sql.Connection;
+
 public class App {
     public static void main(String[] args) {
         try {
             ConfigProvider configs = ConfigProvider.getInstance();
             String port = configs.getPort();
-            Connection dbConn = new DbConnFactory().setUser(configs.getDbUser()).setPassword(configs.getDbPasswd())
-                    .setConnectionString(configs.getDbConnStr()).build();
+            Connection dbConn = new DbConnFactory()
+                    .setUser(configs.getDbUser())
+                    .setPassword(configs.getDbPasswd())
+                    .setConnectionString(configs.getDbConnStr())
+                    .build();
             UserRepository userRepo = new UserRepository(dbConn);
 
             UserServiceImpl userService = new UserServiceImpl(userRepo);

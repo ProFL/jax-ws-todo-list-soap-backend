@@ -4,18 +4,17 @@ import java.util.Map;
 
 public class ConfigProvider {
     private static ConfigProvider _instance;
+    private final Map<String, String> env;
+
+    private ConfigProvider() {
+        this.env = System.getenv();
+    }
 
     public static ConfigProvider getInstance() {
         if (ConfigProvider._instance == null) {
             ConfigProvider._instance = new ConfigProvider();
         }
         return ConfigProvider._instance;
-    }
-
-    private final Map<String, String> env;
-
-    private ConfigProvider() {
-        this.env = System.getenv();
     }
 
     public String getPort() {

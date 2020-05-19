@@ -1,16 +1,11 @@
 package projeto_1.user;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-
 import jakarta.annotation.PostConstruct;
-
 import projeto_1.exceptions.InternalServerErrorException;
 import projeto_1.user.beans.User;
 import projeto_1.user.exceptions.UserNotFoundException;
+
+import java.sql.*;
 
 public class UserRepository {
     private final Connection connection;
