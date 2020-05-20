@@ -5,7 +5,7 @@ import jakarta.annotation.Resource;
 import jakarta.jws.WebService;
 import jakarta.xml.ws.WebServiceContext;
 import projeto_1.exceptions.InternalServerErrorException;
-import projeto_1.user.auth.TokenModule;
+import projeto_1.user.auth.AuthModule;
 import projeto_1.user.auth.exceptions.UnauthorizedException;
 import projeto_1.user.beans.User;
 import projeto_1.user.exceptions.DuplicateUserException;
@@ -15,16 +15,16 @@ import javax.inject.Singleton;
 @Singleton
 @WebService(endpointInterface = "projeto_1.user.UserService")
 public class UserServiceImpl implements UserService {
-    private final TokenModule tokenModule;
+    private final AuthModule authModule;
     private final UserRepository repository;
 
     @Resource
     WebServiceContext ctx;
 
     @Inject
-    public UserServiceImpl(UserRepository repository, TokenModule tokenModule) {
+    public UserServiceImpl(UserRepository repository, AuthModule authModule) {
         this.repository = repository;
-        this.tokenModule = tokenModule;
+        this.authModule = authModule;
     }
 
     @Override
@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User replaceUser(String name, String email, String password)
             throws UnauthorizedException, DuplicateUserException, InternalServerErrorException {
-        User me = this.tokenModule.getAuthenticatedUser(ctx);
+        User me = this.authModule.getAuthenticatedUser(ctx);
         int myId = me.getId();
 
         User emailUser = this.repository.findByEmail(email);

@@ -20,7 +20,7 @@ import java.util.LinkedList;
 import java.util.Map;
 
 @Singleton
-public class TokenModule extends AbstractModule {
+public class AuthModule extends AbstractModule {
     private final String issuer = "todo-list";
     private final Algorithm algorithm;
     private final JWTVerifier verifier;
@@ -28,7 +28,7 @@ public class TokenModule extends AbstractModule {
     private final UserRepository userRepo;
 
     @Inject
-    public TokenModule(@ConfigProvider.SecretKey String secretKey, UserRepository userRepo) {
+    public AuthModule(@ConfigProvider.SecretKey String secretKey, UserRepository userRepo) {
         this.algorithm = Algorithm.HMAC256(secretKey);
         this.verifier = JWT.require(this.algorithm).withIssuer(this.issuer).build();
         this.userRepo = userRepo;

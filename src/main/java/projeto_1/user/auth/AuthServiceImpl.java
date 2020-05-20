@@ -16,20 +16,20 @@ import projeto_1.user.exceptions.UserNotFoundException;
 @WebService(endpointInterface = "projeto_1.user.auth.AuthService")
 public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepo;
-    private final TokenModule tokenModule;
+    private final AuthModule authModule;
 
     @Resource
     WebServiceContext ctx;
 
     @Inject
-    public AuthServiceImpl(UserRepository userRepo, TokenModule tokenModule) {
+    public AuthServiceImpl(UserRepository userRepo, AuthModule authModule) {
         this.userRepo = userRepo;
-        this.tokenModule = tokenModule;
+        this.authModule = authModule;
     }
 
     @Override
     public User whoAmI() throws UnauthorizedException {
-        return this.tokenModule.getAuthenticatedUser(this.ctx);
+        return this.authModule.getAuthenticatedUser(this.ctx);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class AuthServiceImpl implements AuthService {
 
         if (BCrypt.verifyer().verify(password.toCharArray(), user.getPassword().toCharArray()).verified) {
             try {
-                return this.tokenModule.signToken(String.valueOf(user.getId()));
+                return this.authModule.signToken(String.valueOf(user.getId()));
             } catch (Exception exception) {
                 exception.printStackTrace();
                 throw new InternalServerErrorException("Failed to sign token");
