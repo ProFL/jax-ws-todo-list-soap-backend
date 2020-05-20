@@ -7,9 +7,9 @@ import jakarta.jws.WebService;
 import jakarta.xml.ws.WebServiceContext;
 import projeto_1.exceptions.InternalServerErrorException;
 import projeto_1.user.UserRepository;
+import projeto_1.user.auth.beans.Token;
 import projeto_1.user.auth.exceptions.PasswordMismatchException;
 import projeto_1.user.auth.exceptions.UnauthorizedException;
-import projeto_1.user.beans.Token;
 import projeto_1.user.beans.User;
 import projeto_1.user.exceptions.UserNotFoundException;
 

@@ -1,8 +1,6 @@
-package projeto_1.user.beans;
+package projeto_1.user.auth.beans;
 
-import java.io.Serializable;
-
-public class Token implements Serializable {
+public class Token {
     public String token;
 
     public Token() {

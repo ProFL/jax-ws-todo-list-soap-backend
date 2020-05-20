@@ -1,8 +1,6 @@
 package projeto_1.user.beans;
 
-import java.io.Serializable;
-
-public class User implements Serializable {
+public class User {
     private int id;
     private String name;
     private String email;
