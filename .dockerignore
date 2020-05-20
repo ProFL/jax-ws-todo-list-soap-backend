@@ -1,12 +1,3 @@
-bin/
-.env
-.git/
-.idea/
-.vscode/
-
-Dockerfile
-docker-compose.yml
-
 # Java.gitignore
 
 # Compiled class file
@@ -32,3 +23,39 @@ docker-compose.yml
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+# Gradle.gitignore
+
+.gradle
+**/build/
+!src/**/build/
+
+# Ignore Gradle GUI config
+gradle-app.setting
+
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
+
+# Cache of project
+.gradletasknamecache
+
+# # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
+# gradle/wrapper/gradle-wrapper.properties
+
+# Custom rules
+
+.env
+!gradle/wrapper/gradle-wrapper.jar
+
+# VSCode Configuration Files
+.vscode/
+
+# IDEA Configuration Files
+.idea/
+server.iml
+
+# Docker-only rules
+
+.git/
+Dockerfile
+docker-compose.yml
