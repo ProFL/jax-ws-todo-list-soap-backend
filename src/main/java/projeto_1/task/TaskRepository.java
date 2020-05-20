@@ -23,7 +23,7 @@ public class TaskRepository extends Repository<Task> {
             st.execute("CREATE TABLE IF NOT EXISTS " + this.tableName + "("
                     + "id SERIAL PRIMARY KEY,"
                     + "ownerId int NOT NULL,"
-                    + "completed BOOL NOT NULL DEFAULT 0,"
+                    + "completed BOOL NOT NULL DEFAULT false,"
                     + "name VARCHAR NOT NULL,"
                     + "description VARCHAR NOT NULL DEFAULT '',"
                     + "CONSTRAINT owner_fk FOREIGN KEY (ownerId) REFERENCES users(id) ON DELETE CASCADE)");
@@ -60,7 +60,7 @@ public class TaskRepository extends Repository<Task> {
             try {
                 this.setDescription(rs.getString("description"));
             } catch (SQLException e) {
-                if (failCount == 3) {
+                if (failCount == 4) {
                     throw e;
                 }
             }
@@ -83,16 +83,18 @@ public class TaskRepository extends Repository<Task> {
             e.printStackTrace();
             throw new InternalServerErrorException(e);
         }
-        return (Task[]) tasks.toArray();
+        Task[] tasksArr = new Task[tasks.size()];
+        tasks.toArray(tasksArr);
+        return tasksArr;
     }
 
     @Override
     public Task createOne(Task task) throws InternalServerErrorException {
         try (PreparedStatement st = this.connection
                 .prepareStatement("INSERT INTO " + this.tableName
-                        + "(ownerId, name, description) VALUES(?, ?, ?) RETURNING id"
+                        + "(ownerId, name, description) VALUES(?, ?, ?) RETURNING *"
                 )) {
-            st.setInt(1, task.getId());
+            st.setInt(1, task.getOwnerId());
             st.setString(2, task.getName());
             st.setString(3, task.getDescription());
 
