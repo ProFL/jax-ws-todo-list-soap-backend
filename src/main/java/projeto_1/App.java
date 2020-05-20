@@ -5,6 +5,7 @@ import com.google.inject.Injector;
 import jakarta.xml.ws.Endpoint;
 import projeto_1.config.ConfigProvider;
 import projeto_1.config.ConnectionProvider;
+import projeto_1.task.TaskRepository;
 import projeto_1.user.UserRepository;
 import projeto_1.user.UserServiceImpl;
 import projeto_1.user.auth.AuthServiceImpl;
@@ -18,8 +19,12 @@ public class App {
             Injector injector = Guice.createInjector(configs, new ConnectionProvider());
 
             try {
-                UserRepository userRepo = injector.getInstance(UserRepository.class);
-                userRepo.assertTable();
+                for (Repository repo : new Repository[]{
+                        injector.getInstance(UserRepository.class),
+                        injector.getInstance(TaskRepository.class)
+                }) {
+                    repo.assertTable();
+                }
 
                 UserServiceImpl userService = injector.getInstance(UserServiceImpl.class);
                 AuthServiceImpl authService = injector.getInstance(AuthServiceImpl.class);

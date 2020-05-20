@@ -58,4 +58,17 @@ public abstract class Repository<T extends Object> {
     public abstract T createOne(T entity) throws InternalServerErrorException;
 
     public abstract T replaceOne(T entity) throws InternalServerErrorException;
+
+    public void deleteOne(int id) throws InternalServerErrorException {
+        try (PreparedStatement st = connection.prepareStatement(
+                "DELETE FROM " + tableName + " WHERE " + tableName + ".id = ?"
+        )) {
+            st.setInt(1, id);
+            int updated = st.executeUpdate();
+            System.out.println("Query: " + st.toString() + "\nDeleted: " + updated + " entries");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new InternalServerErrorException("Failed to delete entity from " + tableName + " with id: " + id);
+        }
+    }
 }
