@@ -19,7 +19,7 @@ public class App {
 
             try {
                 UserRepository userRepo = injector.getInstance(UserRepository.class);
-                userRepo.createTable();
+                userRepo.assertTable();
 
                 UserServiceImpl userService = injector.getInstance(UserServiceImpl.class);
                 AuthServiceImpl authService = injector.getInstance(AuthServiceImpl.class);
