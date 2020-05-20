@@ -7,12 +7,17 @@ import jakarta.jws.soap.SOAPBinding;
 import jakarta.jws.soap.SOAPBinding.Style;
 import projeto_1.exceptions.InternalServerErrorException;
 import projeto_1.user.auth.exceptions.PasswordMismatchException;
+import projeto_1.user.auth.exceptions.UnauthorizedException;
 import projeto_1.user.beans.Token;
+import projeto_1.user.beans.User;
 import projeto_1.user.exceptions.UserNotFoundException;
 
 @WebService
 @SOAPBinding(style = Style.RPC)
 public interface AuthService {
+    @WebMethod
+    User whoAmI() throws InternalServerErrorException, UnauthorizedException;
+
     @WebMethod
     Token createToken(@WebParam(name = "email") String email, @WebParam(name = "password") String password)
             throws UserNotFoundException, PasswordMismatchException, InternalServerErrorException;

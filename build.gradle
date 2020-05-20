@@ -7,6 +7,7 @@ group = 'projeto_1'
 version = '1.0-SNAPSHOT'
 
 repositories {
+    jcenter()
     mavenCentral()
 }
 
@@ -15,6 +16,8 @@ dependencies {
     implementation 'com.sun.xml.bind:jaxb-ri:3.0.0-M3'
     implementation 'com.auth0:java-jwt:3.10.3'
     implementation 'org.postgresql:postgresql:42.2.12'
+    implementation 'at.favre.lib:bcrypt:0.9.0'
+    implementation 'com.google.inject:guice:4.2.3'
     testImplementation 'junit:junit:4.13'
 }
 
