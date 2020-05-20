@@ -9,7 +9,6 @@ import projeto_1.exceptions.InternalServerErrorException;
 import projeto_1.user.auth.exceptions.UnauthorizedException;
 import projeto_1.user.beans.User;
 import projeto_1.user.exceptions.DuplicateUserException;
-import projeto_1.user.exceptions.UserNotFoundException;
 
 @WebService
 @SOAPBinding(style = Style.RPC)

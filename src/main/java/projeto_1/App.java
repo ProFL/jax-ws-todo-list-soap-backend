@@ -6,6 +6,7 @@ import jakarta.xml.ws.Endpoint;
 import projeto_1.config.ConfigProvider;
 import projeto_1.config.ConnectionProvider;
 import projeto_1.task.TaskRepository;
+import projeto_1.task.TaskServiceImpl;
 import projeto_1.user.UserRepository;
 import projeto_1.user.UserServiceImpl;
 import projeto_1.user.auth.AuthServiceImpl;
@@ -28,11 +29,13 @@ public class App {
 
                 UserServiceImpl userService = injector.getInstance(UserServiceImpl.class);
                 AuthServiceImpl authService = injector.getInstance(AuthServiceImpl.class);
+                TaskServiceImpl taskService = injector.getInstance(TaskServiceImpl.class);
 
                 String baseUrl = "http://0.0.0.0:" + configs.getPort();
                 System.out.println("Publishing services on: " + baseUrl);
                 Endpoint.publish(baseUrl + "/user", userService);
                 Endpoint.publish(baseUrl + "/user/auth", authService);
+                Endpoint.publish(baseUrl + "/tasks", taskService);
             } catch (Exception e) {
                 e.printStackTrace();
                 System.exit(1);

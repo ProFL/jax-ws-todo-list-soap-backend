@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User replaceUser(String name, String email, String password)
             throws UnauthorizedException, DuplicateUserException, InternalServerErrorException {
-        User me = this.authModule.getAuthenticatedUser(ctx);
+        User me = this.authModule.getAuthenticatedUser(ctx.getMessageContext());
         int myId = me.getId();
 
         User emailUser = this.repository.findByEmail(email);

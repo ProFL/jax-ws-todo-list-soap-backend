@@ -34,7 +34,7 @@ public abstract class Repository<T extends Object> {
             throw e;
         } catch (Exception e) {
             e.printStackTrace();
-            throw new InternalServerErrorException("Failed to instantiate entity from result set");
+            throw new InternalServerErrorException(e);
         }
     }
 
@@ -50,7 +50,7 @@ public abstract class Repository<T extends Object> {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new InternalServerErrorException(e.getMessage());
+            throw new InternalServerErrorException(e);
         }
         return null;
     }
@@ -68,7 +68,7 @@ public abstract class Repository<T extends Object> {
             System.out.println("Query: " + st.toString() + "\nDeleted: " + updated + " entries");
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new InternalServerErrorException("Failed to delete entity from " + tableName + " with id: " + id);
+            throw new InternalServerErrorException(e);
         }
     }
 }

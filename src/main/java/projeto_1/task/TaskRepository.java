@@ -5,9 +5,11 @@ import projeto_1.exceptions.InternalServerErrorException;
 import projeto_1.task.beans.Task;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.sql.*;
 import java.util.ArrayList;
 
+@Singleton
 public class TaskRepository extends Repository<Task> {
     @Inject
     public TaskRepository(Connection connection) {
@@ -21,6 +23,7 @@ public class TaskRepository extends Repository<Task> {
             st.execute("CREATE TABLE IF NOT EXISTS " + this.tableName + "("
                     + "id SERIAL PRIMARY KEY,"
                     + "ownerId int NOT NULL,"
+                    + "completed BOOL NOT NULL DEFAULT 0,"
                     + "name VARCHAR NOT NULL,"
                     + "description VARCHAR NOT NULL DEFAULT '',"
                     + "CONSTRAINT owner_fk FOREIGN KEY (ownerId) REFERENCES users(id) ON DELETE CASCADE)");
@@ -41,6 +44,11 @@ public class TaskRepository extends Repository<Task> {
             }
             try {
                 this.setOwnerId(rs.getInt("ownerId"));
+            } catch (SQLException ignored) {
+                failCount += 1;
+            }
+            try {
+                this.setCompleted(rs.getBoolean("completed"));
             } catch (SQLException ignored) {
                 failCount += 1;
             }
@@ -73,7 +81,7 @@ public class TaskRepository extends Repository<Task> {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new InternalServerErrorException(e.getMessage());
+            throw new InternalServerErrorException(e);
         }
         return (Task[]) tasks.toArray();
     }
@@ -95,20 +103,21 @@ public class TaskRepository extends Repository<Task> {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new InternalServerErrorException(e.getMessage());
+            throw new InternalServerErrorException(e);
         }
         throw new InternalServerErrorException("Unexpected error while creating user");
     }
 
     @Override
-    public Task replaceOne(Task entity) throws InternalServerErrorException {
+    public Task replaceOne(Task task) throws InternalServerErrorException {
         try (PreparedStatement st = this.connection
                 .prepareStatement("UPDATE " + this.tableName
-                        + " SET name = ?, description = ? WHERE id = ? RETURNING *"
+                        + " SET name = ?, description = ?, completed = ? WHERE id = ? RETURNING *"
                 )) {
-            st.setString(1, entity.getName());
-            st.setString(2, entity.getDescription());
-            st.setInt(3, entity.getId());
+            st.setString(1, task.getName());
+            st.setString(2, task.getDescription());
+            st.setBoolean(3, task.isCompleted());
+            st.setInt(4, task.getId());
 
             try (ResultSet rs = st.executeQuery()) {
                 while (rs.next()) {
@@ -117,7 +126,7 @@ public class TaskRepository extends Repository<Task> {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new InternalServerErrorException(e.getMessage());
+            throw new InternalServerErrorException(e);
         }
         throw new InternalServerErrorException("Unexpected error, failed to iterate over replace result?");
     }

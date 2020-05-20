@@ -7,7 +7,6 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
-import jakarta.xml.ws.WebServiceContext;
 import jakarta.xml.ws.handler.MessageContext;
 import projeto_1.config.ConfigProvider;
 import projeto_1.user.UserRepository;
@@ -41,25 +40,34 @@ public class AuthModule extends AbstractModule {
                 .sign(this.algorithm));
     }
 
-    public User getAuthenticatedUser(WebServiceContext ctx) throws UnauthorizedException {
+    public User getAuthenticatedUser(MessageContext ctx) throws UnauthorizedException {
         try {
-            Map headers = (Map) ctx.getMessageContext().get(MessageContext.HTTP_REQUEST_HEADERS);
-            String authorization = ((LinkedList<String>) headers.get("Authorization")).get(0);
-            System.out.println(authorization);
-            if (authorization == null) {
-                throw new UnauthorizedException();
+            Map headers = (Map) ctx.get(MessageContext.HTTP_REQUEST_HEADERS);
+            LinkedList<String> authorizationHeaders = (LinkedList<String>) headers.get("Authorization");
+            if (authorizationHeaders == null) {
+                throw new UnauthorizedException("Authorization header is missing");
             }
-            String token = authorization.substring(authorization.indexOf(' ') + 1);
+            String authorization = authorizationHeaders.get(0);
+            if (authorization == null) {
+                throw new UnauthorizedException("Authorization header value is missing");
+            }
+            String authType = "JWT ";
+            if (!authorization.startsWith(authType)) {
+                throw new UnauthorizedException("Wrong authorization type, JWT expected");
+            }
+            String token = authorization.substring(authType.length());
             try {
                 DecodedJWT decoded = this.verifier.verify(token);
                 User user = this.userRepo.findById(Integer.parseInt(decoded.getSubject()));
                 if (user == null) {
-                    throw new UnauthorizedException();
+                    throw new UnauthorizedException("User no longer exists");
                 }
                 return user;
             } catch (JWTVerificationException ignored) {
-                throw new UnauthorizedException();
+                throw new UnauthorizedException("Bad token provided");
             }
+        } catch (UnauthorizedException e) {
+            throw e;
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -77,7 +77,7 @@ public class UserRepository extends Repository<User> {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new InternalServerErrorException(e.getMessage());
+            throw new InternalServerErrorException(e);
         }
         return null;
     }
@@ -99,7 +99,7 @@ public class UserRepository extends Repository<User> {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new InternalServerErrorException(e.getMessage());
+            throw new InternalServerErrorException(e);
         }
         throw new InternalServerErrorException("Unexpected error while creating user");
     }
@@ -122,7 +122,7 @@ public class UserRepository extends Repository<User> {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new InternalServerErrorException(e.getMessage());
+            throw new InternalServerErrorException(e);
         }
         throw new InternalServerErrorException("Unexpected error, failed to iterate over replace result?");
     }

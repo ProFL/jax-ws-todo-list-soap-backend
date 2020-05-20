@@ -29,7 +29,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public User whoAmI() throws UnauthorizedException {
-        return this.authModule.getAuthenticatedUser(this.ctx);
+        return this.authModule.getAuthenticatedUser(this.ctx.getMessageContext());
     }
 
     @Override
@@ -44,9 +44,9 @@ public class AuthServiceImpl implements AuthService {
         if (BCrypt.verifyer().verify(password.toCharArray(), user.getPassword().toCharArray()).verified) {
             try {
                 return this.authModule.signToken(String.valueOf(user.getId()));
-            } catch (Exception exception) {
-                exception.printStackTrace();
-                throw new InternalServerErrorException("Failed to sign token");
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new InternalServerErrorException(e);
             }
         }
 
