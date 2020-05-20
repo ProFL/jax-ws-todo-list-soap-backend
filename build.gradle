@@ -1,0 +1,25 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
+    id 'java'
+}
+
+group = 'projeto_1'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.sun.xml.ws:jaxws-ri:3.0.0-M3'
+    implementation 'com.sun.xml.bind:jaxb-ri:3.0.0-M3'
+    implementation 'com.auth0:java-jwt:3.10.3'
+    implementation 'org.postgresql:postgresql:42.2.12'
+    testImplementation 'junit:junit:4.13'
+}
+
+jar {
+    manifest {
+        attributes('Main-Class': "${project.group}.App")
+    }
+}

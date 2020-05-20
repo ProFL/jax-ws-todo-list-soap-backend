@@ -1,7 +1,14 @@
 .env
-.idea/
-target/
+
+# Gradle output folder
+build/
+
+# VSCode Configuration Files
 .vscode/
+
+# IDEA Configuration Files
+.idea/
+server.iml
 
 # Java.gitignore
 

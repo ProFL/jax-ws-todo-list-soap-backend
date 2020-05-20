@@ -1,6 +1,7 @@
+bin/
 .env
 .git/
-target/
+.idea/
 .vscode/
 
 Dockerfile
