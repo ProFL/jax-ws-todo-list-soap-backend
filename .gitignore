@@ -1,15 +1,3 @@
-.env
-
-# Gradle output folder
-build/
-
-# VSCode Configuration Files
-.vscode/
-
-# IDEA Configuration Files
-.idea/
-server.iml
-
 # Java.gitignore
 
 # Compiled class file
@@ -35,3 +23,18 @@ server.iml
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+# Custom rules
+
+.env
+!gradle/wrapper/gradle-wrapper.jar
+
+# Gradle output folder
+build/
+
+# VSCode Configuration Files
+.vscode/
+
+# IDEA Configuration Files
+.idea/
+server.iml
