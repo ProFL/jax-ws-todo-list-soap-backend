@@ -22,9 +22,9 @@ public class UserRepository extends Repository<User> {
         try (Statement st = this.connection.createStatement()) {
             st.execute("CREATE TABLE IF NOT EXISTS " + this.tableName + "("
                     + "id SERIAL PRIMARY KEY,"
-                    + "name VARCHAR,"
-                    + "email VARCHAR,"
-                    + "password VARCHAR,"
+                    + "name VARCHAR NOT NULL,"
+                    + "email VARCHAR NOT NULL,"
+                    + "password VARCHAR NOT NULL,"
                     + "CONSTRAINT unique_email UNIQUE (email))");
         } catch (SQLException e) {
             e.printStackTrace();

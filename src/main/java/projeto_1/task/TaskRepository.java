@@ -20,10 +20,10 @@ public class TaskRepository extends Repository<Task> {
         try (Statement st = this.connection.createStatement()) {
             st.execute("CREATE TABLE IF NOT EXISTS " + this.tableName + "("
                     + "id SERIAL PRIMARY KEY,"
-                    + "ownerId int,"
-                    + "name VARCHAR,"
-                    + "description VARCHAR,"
-                    + "CONSTRAINT owner_fk FOREIGN KEY (ownerId) REFERENCES users(id))");
+                    + "ownerId int NOT NULL,"
+                    + "name VARCHAR NOT NULL,"
+                    + "description VARCHAR NOT NULL DEFAULT '',"
+                    + "CONSTRAINT owner_fk FOREIGN KEY (ownerId) REFERENCES users(id) ON DELETE CASCADE)");
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Failed to create the tasks table!");
