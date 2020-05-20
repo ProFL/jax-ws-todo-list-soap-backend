@@ -6,6 +6,7 @@ import jakarta.xml.ws.WebServiceContext;
 import projeto_1.exceptions.ForbiddenException;
 import projeto_1.exceptions.InternalServerErrorException;
 import projeto_1.task.beans.Task;
+import projeto_1.task.exceptions.TaskNotFoundException;
 import projeto_1.user.auth.AuthModule;
 import projeto_1.user.auth.exceptions.UnauthorizedException;
 import projeto_1.user.beans.User;
@@ -28,6 +29,19 @@ public class TaskServiceImpl implements TaskService {
         this.repo = taskRepository;
     }
 
+    private Task getTaskICanChange(int id)
+            throws UnauthorizedException, InternalServerErrorException, TaskNotFoundException, ForbiddenException {
+        User me = this.authModule.getAuthenticatedUser(this.ctx.getMessageContext());
+        Task task = this.repo.findById(id);
+        if (task == null) {
+            throw new TaskNotFoundException(id);
+        }
+        if (task.getOwnerId() != me.getId()) {
+            throw new ForbiddenException("You do not own this task!");
+        }
+        return task;
+    }
+
     @Override
     public Task[] findMyTasks() throws UnauthorizedException, InternalServerErrorException {
         User me = this.authModule.getAuthenticatedUser(this.ctx.getMessageContext());
@@ -36,12 +50,8 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task markIsCompleted(int id, boolean completed)
-            throws UnauthorizedException, ForbiddenException, InternalServerErrorException {
-        User me = this.authModule.getAuthenticatedUser(this.ctx.getMessageContext());
-        Task task = this.repo.findById(id);
-        if (task.getOwnerId() != me.getId()) {
-            throw new ForbiddenException("You do not own this task!");
-        }
+            throws UnauthorizedException, ForbiddenException, TaskNotFoundException, InternalServerErrorException {
+        Task task = getTaskICanChange(id);
         task.setCompleted(completed);
         return this.repo.replaceOne(task);
     }
@@ -53,12 +63,9 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task replaceTask(int id, String name, String description) throws UnauthorizedException, ForbiddenException, InternalServerErrorException {
-        User me = this.authModule.getAuthenticatedUser(this.ctx.getMessageContext());
-        Task task = this.repo.findById(id);
-        if (task.getOwnerId() != me.getId()) {
-            throw new ForbiddenException("You do not own this task!");
-        }
+    public Task replaceTask(int id, String name, String description)
+            throws UnauthorizedException, ForbiddenException, TaskNotFoundException, InternalServerErrorException {
+        Task task = getTaskICanChange(id);
         task.setName(name);
         task.setDescription(description);
         return this.repo.replaceOne(task);
@@ -68,6 +75,9 @@ public class TaskServiceImpl implements TaskService {
     public void deleteTask(int id) throws UnauthorizedException, ForbiddenException, InternalServerErrorException {
         User me = this.authModule.getAuthenticatedUser(this.ctx.getMessageContext());
         Task task = this.repo.findById(id);
+        if (task == null) {
+            return;
+        }
         if (task.getOwnerId() != me.getId()) {
             throw new ForbiddenException("You do not own this task!");
         }
