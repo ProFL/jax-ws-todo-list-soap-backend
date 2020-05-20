@@ -5,8 +5,8 @@ import jakarta.annotation.Resource;
 import jakarta.jws.WebService;
 import jakarta.xml.ws.WebServiceContext;
 import projeto_1.exceptions.InternalServerErrorException;
-import projeto_1.user.auth.AuthModule;
-import projeto_1.user.auth.exceptions.UnauthorizedException;
+import projeto_1.auth.AuthModule;
+import projeto_1.auth.exceptions.UnauthorizedException;
 import projeto_1.user.beans.User;
 import projeto_1.user.exceptions.DuplicateUserException;
 

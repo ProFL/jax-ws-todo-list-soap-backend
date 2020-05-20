@@ -1,4 +1,4 @@
-package projeto_1.user.auth.beans;
+package projeto_1.auth.beans;
 
 public class Token {
     public String token;

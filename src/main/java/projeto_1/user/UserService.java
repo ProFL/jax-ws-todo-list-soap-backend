@@ -6,7 +6,7 @@ import jakarta.jws.WebService;
 import jakarta.jws.soap.SOAPBinding;
 import jakarta.jws.soap.SOAPBinding.Style;
 import projeto_1.exceptions.InternalServerErrorException;
-import projeto_1.user.auth.exceptions.UnauthorizedException;
+import projeto_1.auth.exceptions.UnauthorizedException;
 import projeto_1.user.beans.User;
 import projeto_1.user.exceptions.DuplicateUserException;
 

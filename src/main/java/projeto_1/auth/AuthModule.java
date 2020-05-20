@@ -1,4 +1,4 @@
-package projeto_1.user.auth;
+package projeto_1.auth;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -10,8 +10,8 @@ import com.google.inject.Inject;
 import jakarta.xml.ws.handler.MessageContext;
 import projeto_1.config.ConfigProvider;
 import projeto_1.user.UserRepository;
-import projeto_1.user.auth.beans.Token;
-import projeto_1.user.auth.exceptions.UnauthorizedException;
+import projeto_1.auth.beans.Token;
+import projeto_1.auth.exceptions.UnauthorizedException;
 import projeto_1.user.beans.User;
 
 import javax.inject.Singleton;

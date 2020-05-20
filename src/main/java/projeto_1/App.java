@@ -9,7 +9,7 @@ import projeto_1.task.TaskRepository;
 import projeto_1.task.TaskServiceImpl;
 import projeto_1.user.UserRepository;
 import projeto_1.user.UserServiceImpl;
-import projeto_1.user.auth.AuthServiceImpl;
+import projeto_1.auth.AuthServiceImpl;
 
 import java.awt.*;
 
@@ -34,8 +34,8 @@ public class App {
                 String baseUrl = "http://0.0.0.0:" + configs.getPort();
                 System.out.println("Publishing services on: " + baseUrl);
                 Endpoint.publish(baseUrl + "/user", userService);
-                Endpoint.publish(baseUrl + "/user/auth", authService);
-                Endpoint.publish(baseUrl + "/tasks", taskService);
+                Endpoint.publish(baseUrl + "/auth", authService);
+                Endpoint.publish(baseUrl + "/task", taskService);
             } catch (Exception e) {
                 e.printStackTrace();
                 System.exit(1);

@@ -9,7 +9,7 @@ import projeto_1.exceptions.ForbiddenException;
 import projeto_1.exceptions.InternalServerErrorException;
 import projeto_1.task.beans.Task;
 import projeto_1.task.exceptions.TaskNotFoundException;
-import projeto_1.user.auth.exceptions.UnauthorizedException;
+import projeto_1.auth.exceptions.UnauthorizedException;
 
 @WebService
 @SOAPBinding(style = Style.RPC)

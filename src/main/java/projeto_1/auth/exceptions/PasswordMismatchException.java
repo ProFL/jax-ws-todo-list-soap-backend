@@ -1,4 +1,4 @@
-package projeto_1.user.auth.exceptions;
+package projeto_1.auth.exceptions;
 
 public class PasswordMismatchException extends Exception {
     private static final long serialVersionUID = -4144344188217282615L;

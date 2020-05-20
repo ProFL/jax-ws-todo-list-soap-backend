@@ -1,4 +1,4 @@
-package projeto_1.user.auth;
+package projeto_1.auth;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.google.inject.Inject;
@@ -7,13 +7,13 @@ import jakarta.jws.WebService;
 import jakarta.xml.ws.WebServiceContext;
 import projeto_1.exceptions.InternalServerErrorException;
 import projeto_1.user.UserRepository;
-import projeto_1.user.auth.beans.Token;
-import projeto_1.user.auth.exceptions.PasswordMismatchException;
-import projeto_1.user.auth.exceptions.UnauthorizedException;
+import projeto_1.auth.beans.Token;
+import projeto_1.auth.exceptions.PasswordMismatchException;
+import projeto_1.auth.exceptions.UnauthorizedException;
 import projeto_1.user.beans.User;
 import projeto_1.user.exceptions.UserNotFoundException;
 
-@WebService(endpointInterface = "projeto_1.user.auth.AuthService")
+@WebService(endpointInterface = "projeto_1.auth.AuthService")
 public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepo;
     private final AuthModule authModule;
