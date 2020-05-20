@@ -34,37 +34,37 @@ public class TaskRepository extends Repository<Task> {
     }
 
     @Override
-    protected Task updateEntityFromResultSet(ResultSet rs, Task entity) throws SQLException {
-        return new Task() {{
-            short failCount = 0;
-            try {
-                this.setId(rs.getInt("id"));
-            } catch (SQLException ignored) {
-                failCount += 1;
+    protected Task updateEntityFromResultSet(ResultSet rs, Task task) throws SQLException {
+        final short criticalFailureCount = 4;
+        short failCount = 0;
+        try {
+            task.setId(rs.getInt("id"));
+        } catch (SQLException ignored) {
+            failCount++;
+        }
+        try {
+            task.setOwnerId(rs.getInt("ownerId"));
+        } catch (SQLException ignored) {
+            failCount++;
+        }
+        try {
+            task.setCompleted(rs.getBoolean("completed"));
+        } catch (SQLException ignored) {
+            failCount++;
+        }
+        try {
+            task.setName(rs.getString("name"));
+        } catch (SQLException ignored) {
+            failCount++;
+        }
+        try {
+            task.setDescription(rs.getString("description"));
+        } catch (SQLException e) {
+            if (failCount >= criticalFailureCount) {
+                throw e;
             }
-            try {
-                this.setOwnerId(rs.getInt("ownerId"));
-            } catch (SQLException ignored) {
-                failCount += 1;
-            }
-            try {
-                this.setCompleted(rs.getBoolean("completed"));
-            } catch (SQLException ignored) {
-                failCount += 1;
-            }
-            try {
-                this.setName(rs.getString("name"));
-            } catch (SQLException ignored) {
-                failCount += 1;
-            }
-            try {
-                this.setDescription(rs.getString("description"));
-            } catch (SQLException e) {
-                if (failCount == 4) {
-                    throw e;
-                }
-            }
-        }};
+        }
+        return task;
     }
 
     public Task[] findByOwnerId(int ownerId) throws InternalServerErrorException {
@@ -92,7 +92,7 @@ public class TaskRepository extends Repository<Task> {
     public Task createOne(Task task) throws InternalServerErrorException {
         try (PreparedStatement st = this.connection
                 .prepareStatement("INSERT INTO " + this.tableName
-                        + "(ownerId, name, description) VALUES(?, ?, ?) RETURNING *"
+                        + "(ownerId, name, description) VALUES(?, ?, ?) RETURNING id"
                 )) {
             st.setInt(1, task.getOwnerId());
             st.setString(2, task.getName());

@@ -34,26 +34,27 @@ public class UserRepository extends Repository<User> {
 
     @Override
     protected User updateEntityFromResultSet(ResultSet rs, User user) throws SQLException {
+        final short criticalFailureCount = 3;
         short failCount = 0;
         try {
             user.setId(rs.getInt("id"));
         } catch (SQLException ignored) {
-            failCount += 1;
+            failCount++;
         }
         try {
             user.setName(rs.getString("name"));
         } catch (SQLException ignored) {
-            failCount += 1;
+            failCount++;
         }
         try {
             user.setEmail(rs.getString("email"));
         } catch (SQLException ignored) {
-            failCount += 1;
+            failCount++;
         }
         try {
             user.setPassword(rs.getString("password"));
         } catch (SQLException e) {
-            if (failCount == 3) {
+            if (failCount >= criticalFailureCount) {
                 throw e;
             }
         }
