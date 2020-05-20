@@ -19,14 +19,15 @@ public class App {
 
             try {
                 UserRepository userRepo = injector.getInstance(UserRepository.class);
-                String port = configs.getPort();
                 userRepo.createTable();
 
                 UserServiceImpl userService = injector.getInstance(UserServiceImpl.class);
                 AuthServiceImpl authService = injector.getInstance(AuthServiceImpl.class);
 
-                Endpoint.publish("http://0.0.0.0:" + port + "/user", userService);
-                Endpoint.publish("http://0.0.0.0:" + port + "/user/auth", authService);
+                String baseUrl = "http://0.0.0.0:" + configs.getPort();
+                System.out.println("Publishing services on: " + baseUrl);
+                Endpoint.publish(baseUrl + "/user", userService);
+                Endpoint.publish(baseUrl + "/user/auth", authService);
             } catch (Exception e) {
                 e.printStackTrace();
                 System.exit(1);

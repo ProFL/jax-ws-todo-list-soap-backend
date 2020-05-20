@@ -16,9 +16,9 @@ import projeto_1.user.exceptions.UserNotFoundException;
 @SOAPBinding(style = Style.RPC)
 public interface AuthService {
     @WebMethod
-    User whoAmI() throws InternalServerErrorException, UnauthorizedException;
+    User whoAmI() throws UnauthorizedException, InternalServerErrorException;
 
     @WebMethod
-    Token createToken(@WebParam(name = "email") String email, @WebParam(name = "password") String password)
+    Token signIn(@WebParam(name = "email") String email, @WebParam(name = "password") String password)
             throws UserNotFoundException, PasswordMismatchException, InternalServerErrorException;
 }

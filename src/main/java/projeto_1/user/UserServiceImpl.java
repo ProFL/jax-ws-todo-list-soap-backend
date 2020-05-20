@@ -1,22 +1,30 @@
 package projeto_1.user;
 
 import com.google.inject.Inject;
+import jakarta.annotation.Resource;
 import jakarta.jws.WebService;
+import jakarta.xml.ws.WebServiceContext;
 import projeto_1.exceptions.InternalServerErrorException;
+import projeto_1.user.auth.TokenModule;
+import projeto_1.user.auth.exceptions.UnauthorizedException;
 import projeto_1.user.beans.User;
 import projeto_1.user.exceptions.DuplicateUserException;
-import projeto_1.user.exceptions.UserNotFoundException;
 
 import javax.inject.Singleton;
 
 @Singleton
 @WebService(endpointInterface = "projeto_1.user.UserService")
 public class UserServiceImpl implements UserService {
+    private final TokenModule tokenModule;
     private final UserRepository repository;
 
+    @Resource
+    WebServiceContext ctx;
+
     @Inject
-    public UserServiceImpl(UserRepository repository) {
+    public UserServiceImpl(UserRepository repository, TokenModule tokenModule) {
         this.repository = repository;
+        this.tokenModule = tokenModule;
     }
 
     @Override
@@ -30,13 +38,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(int id, String name, String newPassword) throws UserNotFoundException, InternalServerErrorException {
-        User user = this.repository.findById(id);
-        if (user == null) {
-            throw new UserNotFoundException(id);
+    public User replaceUser(String name, String email, String password)
+            throws UnauthorizedException, DuplicateUserException, InternalServerErrorException {
+        User me = this.tokenModule.getAuthenticatedUser(ctx);
+        int myId = me.getId();
+
+        User emailUser = this.repository.findByEmail(email);
+        if (emailUser != null && myId != emailUser.getId()) {
+            throw new DuplicateUserException(email);
         }
-        user.setName(name);
-        user.setPassword(newPassword);
-        return this.repository.replaceOne(user);
+
+        User newMe = new User(myId, name, email, password);
+        return this.repository.replaceOne(newMe);
     }
 }

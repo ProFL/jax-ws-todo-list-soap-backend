@@ -10,7 +10,6 @@ import com.google.inject.Inject;
 import jakarta.xml.ws.WebServiceContext;
 import jakarta.xml.ws.handler.MessageContext;
 import projeto_1.config.ConfigProvider;
-import projeto_1.exceptions.InternalServerErrorException;
 import projeto_1.user.UserRepository;
 import projeto_1.user.auth.exceptions.UnauthorizedException;
 import projeto_1.user.beans.Token;
@@ -58,14 +57,11 @@ public class TokenModule extends AbstractModule {
                     throw new UnauthorizedException();
                 }
                 return user;
-            } catch (InternalServerErrorException e) {
-                e.printStackTrace();
-            } catch (JWTVerificationException e) {
+            } catch (JWTVerificationException ignored) {
                 throw new UnauthorizedException();
             }
         } catch (Exception e) {
             e.printStackTrace();
-            throw new UnauthorizedException();
         }
         throw new UnauthorizedException();
     }

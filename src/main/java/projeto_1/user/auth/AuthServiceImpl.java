@@ -33,7 +33,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public Token createToken(String email, String password)
+    public Token signIn(String email, String password)
             throws UserNotFoundException, PasswordMismatchException, InternalServerErrorException {
         User user = userRepo.findByEmail(email);
 
