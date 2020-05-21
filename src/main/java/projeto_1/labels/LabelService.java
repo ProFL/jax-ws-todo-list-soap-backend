@@ -9,6 +9,7 @@ import projeto_1.exceptions.ForbiddenException;
 import projeto_1.exceptions.InternalServerErrorException;
 import projeto_1.labels.beans.Label;
 import projeto_1.labels.exceptions.DuplicateLabelException;
+import projeto_1.labels.exceptions.LabelNotFoundException;
 import projeto_1.task.beans.Task;
 
 @WebService
@@ -29,8 +30,8 @@ public interface LabelService {
             @WebParam(name = "id") int id,
             @WebParam(name = "name") String name,
             @WebParam(name = "color") String color
-    ) throws UnauthorizedException, DuplicateLabelException, InternalServerErrorException;
+    ) throws UnauthorizedException, DuplicateLabelException, InternalServerErrorException, ForbiddenException, LabelNotFoundException;
 
     @WebMethod
-    Label deleteLabel(int id) throws UnauthorizedException, ForbiddenException, InternalServerErrorException;
+    void deleteLabel(int id) throws UnauthorizedException, ForbiddenException, InternalServerErrorException;
 }
