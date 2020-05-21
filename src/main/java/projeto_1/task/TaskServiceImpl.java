@@ -3,12 +3,17 @@ package projeto_1.task;
 import jakarta.annotation.Resource;
 import jakarta.jws.WebService;
 import jakarta.xml.ws.WebServiceContext;
-import projeto_1.exceptions.ForbiddenException;
-import projeto_1.exceptions.InternalServerErrorException;
-import projeto_1.task.beans.Task;
-import projeto_1.task.exceptions.TaskNotFoundException;
 import projeto_1.auth.AuthModule;
 import projeto_1.auth.exceptions.UnauthorizedException;
+import projeto_1.exceptions.ForbiddenException;
+import projeto_1.exceptions.InternalServerErrorException;
+import projeto_1.labels.LabelRepository;
+import projeto_1.labels.beans.Label;
+import projeto_1.labels.exceptions.LabelNotFoundException;
+import projeto_1.labels_tasks.LabelsTasksRepository;
+import projeto_1.labels_tasks.beans.LabelsTasks;
+import projeto_1.task.beans.Task;
+import projeto_1.task.exceptions.TaskNotFoundException;
 import projeto_1.user.beans.User;
 
 import javax.inject.Inject;
@@ -19,25 +24,40 @@ import javax.inject.Singleton;
 public class TaskServiceImpl implements TaskService {
     private final AuthModule authModule;
     private final TaskRepository repo;
+    private final LabelRepository lblRepo;
+    private final LabelsTasksRepository lblTskRepo;
 
     @Resource
     WebServiceContext ctx;
 
     @Inject
-    public TaskServiceImpl(AuthModule authModule, TaskRepository taskRepository) {
+    public TaskServiceImpl(AuthModule authModule, TaskRepository taskRepository, LabelRepository lblRepo, LabelsTasksRepository lblTskRepo) {
         this.authModule = authModule;
         this.repo = taskRepository;
+        this.lblRepo = lblRepo;
+        this.lblTskRepo = lblTskRepo;
     }
 
-    private Task getTaskICanChange(int id)
-            throws UnauthorizedException, InternalServerErrorException, TaskNotFoundException, ForbiddenException {
-        User me = this.authModule.getAuthenticatedUser(this.ctx.getMessageContext());
-        Task task = this.repo.findById(id);
-        if (task == null) {
-            throw new TaskNotFoundException(id);
+    private Label isLabelOwner(int userId, int labelId)
+            throws InternalServerErrorException, ForbiddenException, LabelNotFoundException {
+        Label label = this.lblRepo.findById(labelId);
+        if (label == null) {
+            throw new LabelNotFoundException(labelId);
         }
-        if (task.getOwnerId() != me.getId()) {
-            throw new ForbiddenException("You do not own this task!");
+        if (userId != label.getId()) {
+            throw new ForbiddenException("Label not owned");
+        }
+        return label;
+    }
+
+    private Task isTaskOwner(int userId, int taskId)
+            throws UnauthorizedException, InternalServerErrorException, TaskNotFoundException, ForbiddenException {
+        Task task = this.repo.findById(taskId);
+        if (task == null) {
+            throw new TaskNotFoundException(taskId);
+        }
+        if (userId != task.getOwnerId()) {
+            throw new ForbiddenException("Task not owned");
         }
         return task;
     }
@@ -49,9 +69,36 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public Label[] findTaskLabels(int id) throws UnauthorizedException, ForbiddenException, TaskNotFoundException,
+            InternalServerErrorException {
+        this.isTaskOwner(this.authModule.getAuthenticatedUser(this.ctx.getMessageContext()).getId(), id);
+        return this.lblTskRepo.findByTaskId(id);
+    }
+
+    @Override
+    public Label[] labelTask(int id, int labelId) throws InternalServerErrorException, ForbiddenException,
+            UnauthorizedException, TaskNotFoundException, LabelNotFoundException {
+        int userId = this.authModule.getAuthenticatedUser(this.ctx.getMessageContext()).getId();
+        this.isTaskOwner(userId, id);
+        this.isLabelOwner(userId, labelId);
+        this.lblTskRepo.createOne(new LabelsTasks(id, labelId));
+        return this.lblTskRepo.findByTaskId(id);
+    }
+
+    @Override
+    public Label[] unlabelTask(int id, int labelId) throws TaskNotFoundException, InternalServerErrorException,
+            ForbiddenException, UnauthorizedException, LabelNotFoundException {
+        int userId = this.authModule.getAuthenticatedUser(this.ctx.getMessageContext()).getId();
+        this.isTaskOwner(userId, id);
+        this.isLabelOwner(userId, labelId);
+        this.lblTskRepo.deleteOne(new LabelsTasks(id, labelId));
+        return this.lblTskRepo.findByTaskId(id);
+    }
+
+    @Override
     public Task markIsCompleted(int id, boolean completed)
             throws UnauthorizedException, ForbiddenException, TaskNotFoundException, InternalServerErrorException {
-        Task task = getTaskICanChange(id);
+        Task task = isTaskOwner(this.authModule.getAuthenticatedUser(this.ctx.getMessageContext()).getId(), id);
         task.setCompleted(completed);
         return this.repo.replaceOne(task);
     }
@@ -65,7 +112,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Task replaceTask(int id, String name, String description)
             throws UnauthorizedException, ForbiddenException, TaskNotFoundException, InternalServerErrorException {
-        Task task = getTaskICanChange(id);
+        Task task = isTaskOwner(this.authModule.getAuthenticatedUser(this.ctx.getMessageContext()).getId(), id);
         task.setName(name);
         task.setDescription(description);
         return this.repo.replaceOne(task);

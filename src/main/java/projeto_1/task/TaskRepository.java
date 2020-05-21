@@ -37,7 +37,7 @@ public class TaskRepository extends Repository<Task> {
     }
 
     @Override
-    protected Task updateEntityFromResultSet(ResultSet rs, Task task) throws SQLException {
+    public Task updateEntityFromResultSet(ResultSet rs, Task task) throws SQLException {
         final short criticalFailureCount = 4;
         short failCount = 0;
         try {

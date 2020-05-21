@@ -35,7 +35,7 @@ public class UserRepository extends Repository<User> {
     }
 
     @Override
-    protected User updateEntityFromResultSet(ResultSet rs, User user) throws SQLException {
+    public User updateEntityFromResultSet(ResultSet rs, User user) throws SQLException {
         final short criticalFailureCount = 3;
         short failCount = 0;
         try {

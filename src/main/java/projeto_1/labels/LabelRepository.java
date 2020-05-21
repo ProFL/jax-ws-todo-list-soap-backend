@@ -6,9 +6,11 @@ import projeto_1.labels.beans.Label;
 import projeto_1.user.UserRepository;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.sql.*;
 import java.util.ArrayList;
 
+@Singleton
 public class LabelRepository extends Repository<Label> {
     public static final String tableName = "labels";
 
@@ -35,7 +37,7 @@ public class LabelRepository extends Repository<Label> {
     }
 
     @Override
-    protected Label updateEntityFromResultSet(ResultSet rs, Label label) throws SQLException {
+    public Label updateEntityFromResultSet(ResultSet rs, Label label) throws SQLException {
         final short criticalFailureCount = 3;
         short failCount = 0;
         try {

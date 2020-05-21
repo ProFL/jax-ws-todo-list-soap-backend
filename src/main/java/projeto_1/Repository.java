@@ -24,9 +24,9 @@ public abstract class Repository<T extends Object> {
     @PostConstruct
     public abstract void assertTable();
 
-    protected abstract T updateEntityFromResultSet(ResultSet rs, T entity) throws SQLException;
+    public abstract T updateEntityFromResultSet(ResultSet rs, T entity) throws SQLException;
 
-    protected T createEntityFromResultSet(ResultSet rs) throws SQLException, InternalServerErrorException {
+    public T createEntityFromResultSet(ResultSet rs) throws SQLException, InternalServerErrorException {
         try {
             Constructor<T> constructor = this.entityClass.getConstructor();
             return this.updateEntityFromResultSet(rs, constructor.newInstance());

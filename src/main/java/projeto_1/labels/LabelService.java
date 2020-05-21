@@ -19,7 +19,7 @@ public interface LabelService {
     Label[] findMyLabels() throws UnauthorizedException, InternalServerErrorException;
 
     @WebMethod
-    Task[] findLabeledTasks(@WebParam(name = "id") int id) throws UnauthorizedException, InternalServerErrorException;
+    Task[] findLabeledTasks(@WebParam(name = "id") int id) throws UnauthorizedException, InternalServerErrorException, LabelNotFoundException, ForbiddenException;
 
     @WebMethod
     Label createLabel(@WebParam(name = "name") String name, @WebParam(name = "color") String color)
