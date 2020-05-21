@@ -11,6 +11,7 @@ import projeto_1.exceptions.InternalServerErrorException;
 import projeto_1.labels.beans.Label;
 import projeto_1.labels.exceptions.LabelNotFoundException;
 import projeto_1.task.beans.Task;
+import projeto_1.task.exceptions.AlreadyLabeledException;
 import projeto_1.task.exceptions.TaskNotFoundException;
 
 @WebService
@@ -26,7 +27,7 @@ public interface TaskService {
     @WebMethod
     Label[] labelTask(@WebParam(name = "id") int id, @WebParam(name="labelId") int labelId)
             throws InternalServerErrorException, ForbiddenException, UnauthorizedException, TaskNotFoundException,
-            LabelNotFoundException;
+            LabelNotFoundException, AlreadyLabeledException;
 
     @WebMethod
     Label[] unlabelTask(@WebParam(name = "id") int id, @WebParam(name="labelId") int labelId)

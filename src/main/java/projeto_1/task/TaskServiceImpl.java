@@ -13,11 +13,13 @@ import projeto_1.labels.exceptions.LabelNotFoundException;
 import projeto_1.labels_tasks.LabelsTasksRepository;
 import projeto_1.labels_tasks.beans.LabelsTasks;
 import projeto_1.task.beans.Task;
+import projeto_1.task.exceptions.AlreadyLabeledException;
 import projeto_1.task.exceptions.TaskNotFoundException;
 import projeto_1.user.beans.User;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.sql.SQLException;
 
 @Singleton
 @WebService(endpointInterface = "projeto_1.task.TaskService")
@@ -51,7 +53,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private Task isTaskOwner(int userId, int taskId)
-            throws UnauthorizedException, InternalServerErrorException, TaskNotFoundException, ForbiddenException {
+            throws InternalServerErrorException, TaskNotFoundException, ForbiddenException {
         Task task = this.repo.findById(taskId);
         if (task == null) {
             throw new TaskNotFoundException(taskId);
@@ -77,11 +79,18 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Label[] labelTask(int id, int labelId) throws InternalServerErrorException, ForbiddenException,
-            UnauthorizedException, TaskNotFoundException, LabelNotFoundException {
+            UnauthorizedException, TaskNotFoundException, LabelNotFoundException, AlreadyLabeledException {
         int userId = this.authModule.getAuthenticatedUser(this.ctx.getMessageContext()).getId();
         this.isTaskOwner(userId, id);
         this.isLabelOwner(userId, labelId);
-        this.lblTskRepo.createOne(new LabelsTasks(id, labelId));
+        try {
+            this.lblTskRepo.createOne(new LabelsTasks(id, labelId));
+        } catch (InternalServerErrorException e) {
+            if (e.innerException instanceof SQLException) {
+                throw new AlreadyLabeledException(id, labelId);
+            }
+            throw e;
+        }
         return this.lblTskRepo.findByTaskId(id);
     }
 
