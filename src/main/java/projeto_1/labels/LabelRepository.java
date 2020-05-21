@@ -46,7 +46,7 @@ public class LabelRepository extends Repository<Label> {
             failCount++;
         }
         try {
-            label.setId(rs.getInt("ownerId"));
+            label.setOwnerId(rs.getInt("ownerId"));
         } catch (SQLException ignored) {
             failCount++;
         }

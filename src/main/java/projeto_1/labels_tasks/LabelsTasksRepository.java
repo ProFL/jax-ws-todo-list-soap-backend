@@ -53,9 +53,9 @@ public class LabelsTasksRepository extends Repository<LabelsTasks> {
         ArrayList<Label> labels = new ArrayList<>();
         try (PreparedStatement st = this.connection.prepareStatement(
                 "SELECT * FROM " + tableName +
-                        " WHERE " + tableName + ".taskId = ? " +
-                        "JOIN " + LabelRepository.tableName +
-                        " ON " + tableName + ".labelId = " + LabelRepository.tableName + ".id"
+                        " JOIN " + LabelRepository.tableName +
+                        " ON " + tableName + ".labelId = " + LabelRepository.tableName + ".id" +
+                        " WHERE " + tableName + ".taskId = ?"
         )) {
             st.setInt(1, taskId);
             try (ResultSet rs = st.executeQuery()) {
@@ -76,9 +76,9 @@ public class LabelsTasksRepository extends Repository<LabelsTasks> {
         ArrayList<Task> tasks = new ArrayList<>();
         try (PreparedStatement st = this.connection.prepareStatement(
                 "SELECT * FROM " + tableName +
-                        " WHERE " + tableName + ".labelId = ? " +
-                        "JOIN " + TaskRepository.tableName +
-                        " ON " + tableName + ".taskId = " + TaskRepository.tableName + ".id"
+                        " JOIN " + TaskRepository.tableName +
+                        " ON " + tableName + ".taskId = " + TaskRepository.tableName + ".id " +
+                        " WHERE " + tableName + ".labelId = ?"
         )) {
             st.setInt(1, labelId);
             try (ResultSet rs = st.executeQuery()) {
@@ -119,7 +119,7 @@ public class LabelsTasksRepository extends Repository<LabelsTasks> {
     public void deleteOne(LabelsTasks entity) throws InternalServerErrorException {
         try (PreparedStatement st = this.connection
                 .prepareStatement("DELETE FROM " + tableName
-                        + "WHERE " + tableName + ".taskId = ? AND " + tableName + ".labelId = ?"
+                        + " WHERE " + tableName + ".taskId = ? AND " + tableName + ".labelId = ?"
                 )) {
             st.setInt(1, entity.getTaskId());
             st.setInt(2, entity.getLabelId());

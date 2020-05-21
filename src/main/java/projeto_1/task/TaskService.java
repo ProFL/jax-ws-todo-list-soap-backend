@@ -24,10 +24,14 @@ public interface TaskService {
             TaskNotFoundException, ForbiddenException;
 
     @WebMethod
-    Label[] labelTask(@WebParam(name = "id") int id, @WebParam(name="labelId") int labelId) throws InternalServerErrorException, ForbiddenException, UnauthorizedException, TaskNotFoundException, LabelNotFoundException;
+    Label[] labelTask(@WebParam(name = "id") int id, @WebParam(name="labelId") int labelId)
+            throws InternalServerErrorException, ForbiddenException, UnauthorizedException, TaskNotFoundException,
+            LabelNotFoundException;
 
     @WebMethod
-    Label[] unlabelTask(@WebParam(name = "id") int id, @WebParam(name="labelId") int labelId) throws TaskNotFoundException, InternalServerErrorException, ForbiddenException, UnauthorizedException, LabelNotFoundException;
+    Label[] unlabelTask(@WebParam(name = "id") int id, @WebParam(name="labelId") int labelId)
+            throws TaskNotFoundException, InternalServerErrorException, ForbiddenException, UnauthorizedException,
+            LabelNotFoundException;
 
     @WebMethod
     Task markIsCompleted(@WebParam(name = "id") int id, @WebParam(name = "completed") boolean completed)
@@ -45,5 +49,6 @@ public interface TaskService {
             throws UnauthorizedException, ForbiddenException, TaskNotFoundException, InternalServerErrorException;
 
     @WebMethod
-    void deleteTask(@WebParam(name = "id") int id) throws UnauthorizedException, ForbiddenException, InternalServerErrorException;
+    void deleteTask(@WebParam(name = "id") int id) throws UnauthorizedException, ForbiddenException,
+            InternalServerErrorException;
 }

@@ -19,7 +19,8 @@ public interface LabelService {
     Label[] findMyLabels() throws UnauthorizedException, InternalServerErrorException;
 
     @WebMethod
-    Task[] findLabeledTasks(@WebParam(name = "id") int id) throws UnauthorizedException, InternalServerErrorException, LabelNotFoundException, ForbiddenException;
+    Task[] findLabeledTasks(@WebParam(name = "id") int id)
+            throws UnauthorizedException, InternalServerErrorException, LabelNotFoundException, ForbiddenException;
 
     @WebMethod
     Label createLabel(@WebParam(name = "name") String name, @WebParam(name = "color") String color)
@@ -33,5 +34,6 @@ public interface LabelService {
     ) throws UnauthorizedException, DuplicateLabelException, InternalServerErrorException, ForbiddenException, LabelNotFoundException;
 
     @WebMethod
-    void deleteLabel(int id) throws UnauthorizedException, ForbiddenException, InternalServerErrorException;
+    void deleteLabel(@WebParam(name = "id") int id)
+            throws UnauthorizedException, ForbiddenException, InternalServerErrorException;
 }
