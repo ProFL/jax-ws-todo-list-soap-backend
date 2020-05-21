@@ -59,6 +59,27 @@ public class LabelRepository extends Repository<Label> {
         return label;
     }
 
+    public Label[] findByOwnerId(int ownerId) throws InternalServerErrorException {
+        ArrayList<Label> labels = new ArrayList<>();
+        try (PreparedStatement st = this.connection.prepareStatement(
+                "SELECT * FROM " + tableName
+                        + " WHERE " + tableName + ".ownerId = ?"
+        )) {
+            st.setInt(1, ownerId);
+            try (ResultSet rs = st.executeQuery()) {
+                while (rs.next()) {
+                    labels.add(this.createEntityFromResultSet(rs));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new InternalServerErrorException(e);
+        }
+        Label[] tasksArr = new Label[labels.size()];
+        labels.toArray(tasksArr);
+        return tasksArr;
+    }
+
     @Override
     public Label createOne(Label label) throws InternalServerErrorException {
         try (PreparedStatement st = this.connection
