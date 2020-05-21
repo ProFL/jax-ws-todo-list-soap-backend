@@ -34,6 +34,7 @@ public class LabelsTasksRepository extends Repository<LabelsTasks> {
             st.execute("CREATE TABLE IF NOT EXISTS " + tableName + '(' +
                     "taskId int NOT NULL" + ',' +
                     "labelId int NOT NULL" + ',' +
+                    "CONSTRAINT rel_unique UNIQUE (taskId, labelId)" + ',' +
                     "CONSTRAINT task_fk FOREIGN KEY (taskId) REFERENCES " + TaskRepository.tableName + "(id) ON DELETE CASCADE" + ',' +
                     "CONSTRAINT label_fk FOREIGN KEY (labelId) REFERENCES " + LabelRepository.tableName + "(id) ON DELETE CASCADE" + ')');
         } catch (SQLException e) {
