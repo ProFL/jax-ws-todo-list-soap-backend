@@ -11,16 +11,18 @@ import java.sql.*;
 
 @Singleton
 public class UserRepository extends Repository<User> {
+    public static final String tableName = "users";
+
     @Inject
     public UserRepository(Connection connection) {
-        super(User.class, "users", connection);
+        super(User.class, tableName, connection);
     }
 
     @Override
     public void assertTable() {
         System.out.println("Ensuring users table exists...");
         try (Statement st = this.connection.createStatement()) {
-            st.execute("CREATE TABLE IF NOT EXISTS " + this.tableName + "("
+            st.execute("CREATE TABLE IF NOT EXISTS " + tableName + "("
                     + "id SERIAL PRIMARY KEY,"
                     + "name VARCHAR NOT NULL,"
                     + "email VARCHAR NOT NULL,"
@@ -67,8 +69,8 @@ public class UserRepository extends Repository<User> {
 
     public User findByEmail(String email) throws InternalServerErrorException {
         try (PreparedStatement st = this.connection.prepareStatement(
-                "SELECT * FROM " + this.tableName
-                        + " WHERE " + this.tableName + ".email = ?"
+                "SELECT * FROM " + tableName
+                        + " WHERE " + tableName + ".email = ?"
         )) {
             st.setString(1, email);
             try (ResultSet rs = st.executeQuery()) {
@@ -86,7 +88,7 @@ public class UserRepository extends Repository<User> {
     @Override
     public User createOne(User user) throws InternalServerErrorException {
         try (PreparedStatement st = this.connection
-                .prepareStatement("INSERT INTO " + this.tableName
+                .prepareStatement("INSERT INTO " + tableName
                         + "(name, email, password) VALUES(?, ?, ?) RETURNING id, password"
                 )) {
             st.setString(1, user.getName());
@@ -108,7 +110,7 @@ public class UserRepository extends Repository<User> {
     @Override
     public User replaceOne(User user) throws InternalServerErrorException {
         try (PreparedStatement st = this.connection
-                .prepareStatement("UPDATE " + this.tableName
+                .prepareStatement("UPDATE " + tableName
                         + " SET name = ?, email = ?, password = ? WHERE id = ? RETURNING *"
                 )) {
             st.setString(1, user.getName());

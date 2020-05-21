@@ -3,6 +3,7 @@ package projeto_1.task;
 import projeto_1.Repository;
 import projeto_1.exceptions.InternalServerErrorException;
 import projeto_1.task.beans.Task;
+import projeto_1.user.UserRepository;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -11,22 +12,24 @@ import java.util.ArrayList;
 
 @Singleton
 public class TaskRepository extends Repository<Task> {
+    public static final String tableName = "tasks";
+
     @Inject
     public TaskRepository(Connection connection) {
-        super(Task.class, "tasks", connection);
+        super(Task.class, tableName, connection);
     }
 
     @Override
     public void assertTable() {
         System.out.println("Ensuring tasks table exists...");
         try (Statement st = this.connection.createStatement()) {
-            st.execute("CREATE TABLE IF NOT EXISTS " + this.tableName + "("
+            st.execute("CREATE TABLE IF NOT EXISTS " + tableName + "("
                     + "id SERIAL PRIMARY KEY,"
                     + "ownerId int NOT NULL,"
                     + "completed BOOL NOT NULL DEFAULT false,"
                     + "name VARCHAR NOT NULL,"
                     + "description VARCHAR NOT NULL DEFAULT '',"
-                    + "CONSTRAINT owner_fk FOREIGN KEY (ownerId) REFERENCES users(id) ON DELETE CASCADE)");
+                    + "CONSTRAINT owner_fk FOREIGN KEY (ownerId) REFERENCES " + UserRepository.tableName + "(id) ON DELETE CASCADE)");
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Failed to create the tasks table!");
@@ -70,8 +73,8 @@ public class TaskRepository extends Repository<Task> {
     public Task[] findByOwnerId(int ownerId) throws InternalServerErrorException {
         ArrayList<Task> tasks = new ArrayList<>();
         try (PreparedStatement st = this.connection.prepareStatement(
-                "SELECT * FROM " + this.tableName
-                        + " WHERE " + this.tableName + ".ownerId = ?"
+                "SELECT * FROM " + tableName
+                        + " WHERE " + tableName + ".ownerId = ?"
         )) {
             st.setInt(1, ownerId);
             try (ResultSet rs = st.executeQuery()) {
@@ -91,7 +94,7 @@ public class TaskRepository extends Repository<Task> {
     @Override
     public Task createOne(Task task) throws InternalServerErrorException {
         try (PreparedStatement st = this.connection
-                .prepareStatement("INSERT INTO " + this.tableName
+                .prepareStatement("INSERT INTO " + tableName
                         + "(ownerId, name, description) VALUES(?, ?, ?) RETURNING id"
                 )) {
             st.setInt(1, task.getOwnerId());
@@ -113,7 +116,7 @@ public class TaskRepository extends Repository<Task> {
     @Override
     public Task replaceOne(Task task) throws InternalServerErrorException {
         try (PreparedStatement st = this.connection
-                .prepareStatement("UPDATE " + this.tableName
+                .prepareStatement("UPDATE " + tableName
                         + " SET name = ?, description = ?, completed = ? WHERE id = ? RETURNING *"
                 )) {
             st.setString(1, task.getName());
