@@ -67,8 +67,10 @@ public class AuthModule extends AbstractModule {
                 throw new UnauthorizedException("Bad token provided", jwtVerificationException);
             }
         } catch (UnauthorizedException e) {
+            System.out.println("Request not authorized");
             throw e;
         } catch (Exception e) {
+            System.out.println("Error getting authenticated user");
             e.printStackTrace();
         }
         throw new UnauthorizedException();
