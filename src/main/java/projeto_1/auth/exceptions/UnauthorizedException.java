@@ -12,4 +12,9 @@ public class UnauthorizedException extends Exception {
         super("You need to be authenticated to perform this action");
         this.extraInfo = extraInfo;
     }
+
+    public UnauthorizedException(String extraInfo, Exception baseException) {
+        super("You need to be authenticated to perform this action", baseException);
+        this.extraInfo = extraInfo;
+    }
 }

@@ -63,8 +63,8 @@ public class AuthModule extends AbstractModule {
                     throw new UnauthorizedException("User no longer exists");
                 }
                 return user;
-            } catch (JWTVerificationException ignored) {
-                throw new UnauthorizedException("Bad token provided");
+            } catch (JWTVerificationException jwtVerificationException) {
+                throw new UnauthorizedException("Bad token provided", jwtVerificationException);
             }
         } catch (UnauthorizedException e) {
             throw e;
